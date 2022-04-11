@@ -16,5 +16,8 @@ Configuration of my Centos7 master VM
    b. yum install ansible (latest version)
    c. TO BE DONE. FIND A WAY TO INSTALL ANY ANSIBLE VERSION ON MASTER
    d. All epel Ansible versions: https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
-
+7. Add own user to wheel group
+   a. 'visudo'
+   b. Unhash the %wheel line
+   c. 'usermod –aG wheel <username>'
 Now you are set to use the Ansible scripts in this repository. 
