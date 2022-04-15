@@ -11,21 +11,25 @@ Configuration of my Centos7 master VM
       * You should now be able to connect to your host via the forward rule
    c. Configure a proxy to access the internet (if required)
       * Curl a website to check if internet access is working
-4. Create an SSH key
-4. Connect your IDE to the VM
+      * More information about the proxy I used you can find below.
 5. Install Ansible
-   a. yum install epel-release
-   b. yum install ansible (latest version)
-   c. TO BE DONE. FIND A WAY TO INSTALL ANY ANSIBLE VERSION ON MASTER
-   d. All epel Ansible versions: https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
-
-   
-   
-   
-   
-   4. Install git (any version will do)
+   a. Add an Ansible repository
+      * Example config below
+   b. yum install ansible-x.x.x (e.g ansible-2.9.17)
+6. Install git (any version will do)
    a. 'yum install git' (easiest)
    b. Check the version of git: git --version
+7. Clone this repository to you linux machine
+
+You are all set to run Ansible and the environment will be set up for you
+ 
+4. Create an SSH key
+4. Connect your IDE to the VM
+   
+   
+   
+   
+
 5. Install wget
    a. 'yum install wget'
 7. Add own user to wheel group
@@ -58,3 +62,41 @@ GATEWAY=10.0.2.1
 DNS1=x.x.x.x
 DNS2=x.x.x.x
 
+# Example proxy config
+1. On your windows host make sure Golang and Git are installed.
+2. Clone the gontlm to a local folder and change directory to the cloned folder
+   * https://github.com/bdwyertech/gontlm-proxy
+3. Command: "go install"
+4. Update /etc/yum.conf file with the proxy settings
+   * proxy=http://10.0.2.2:3128/
+5. Update ~/.bashrc file
+   * See below:
+export http_proxy="http://10.0.2.2:3128/"
+export https_proxy=${http_proxy}
+export no_proxy="localhost,10.0.2.2,127.0.0.0/8,::1"
+export HTTPS_PROXY=${http_proxy}
+export HTTP_PROXY=${http_proxy}
+export NO_PROXY=${no_proxy}
+export _JAVA_OPTIONS='-Dhttp.proxyHost=10.0.2.2 -Dhttp.proxyPort=3128 -Dhttps.proxyHost=10.0.2.2 -Dhttps.proxyPort=3128 -DsocksProxyHost=10.0.2.2 -DsocksProxyPort=8010 -Dhttp.nonProxyHosts="localhost"'
+   
+NOTE: I am using a NAT network on Virtualbox. 10.0.2.2 is the Gateway of my specific NAT network. Port 3128 is the default port used by gontlm
+   
+6. You can create a powershell script to run gontlm in the background and run it when you need the proxy:
+
+   function GoNTLM-Enable {
+	Remove-Job -Name GoNTLM-Proxy -Force -ErrorAction SilentlyContinue
+	Start-Job -Name GoNTLM-Proxy -ScriptBlock {C:\Users\tvannor\go\bin\gontlm-proxy.exe }
+	$env:http_proxy='http://127.0.0.1:3128'
+}
+
+GoNTLM-Enable
+   
+# Example Yum repo config
+[tnorden@centos7master ~]$ cat /etc/yum.repos.d/ansible.repo
+[ansible]
+name=Extra Ansible package versions
+baseurl=https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
+enabled=1
+gpgcheck=0
+
+   
