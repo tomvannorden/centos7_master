@@ -1,5 +1,10 @@
 ---
 
+#- name: Add Ansible repo key
+#  rpm_key:
+#    state: present
+#    key: https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub
+
 - name: Add Ansible repository
   yum_repository:
     name: ansible
@@ -8,6 +13,11 @@
     gpgcheck: false
     enabled: true
 
+#- name: Add Terraform repo key
+#  rpm_key:
+#    state: present
+#    key: https://apt.releases.hashicorp.com/gpg
+
 - name: Add Terraform repository
   yum_repository:
     name: hashicorp
@@ -15,6 +25,11 @@
     baseurl: https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable
     gpgcheck: false
     enabled: true
+
+#- name: Add google-cloud sdk repo key
+#  rpm_key:
+#    state: present
+#    key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 
 - name: Add Google-cloud sdk repository
   yum_repository:
