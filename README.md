@@ -20,10 +20,12 @@ Configuration of my Centos7 master VM
    a. 'yum install git' (easiest)
    b. Check the version of git: git --version
 7. Clone this repository to you linux machine
-
-You are all set to run Ansible and the environment will be set up for you
+8. Create an SSH key and copy it to bitbucket
+9. Connect your development environment to the 
+	
+	You are all set to run Ansible and the environment will be set up for you
  
-4. Create an SSH key
+
 4. Connect your IDE to the VM
    
    
