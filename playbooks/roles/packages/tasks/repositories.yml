@@ -1,0 +1,25 @@
+---
+
+- name: Add Ansible repository
+  yum_repository:
+    name: ansible
+    description: Ansible repository to install other version of ansible
+    baseurl: https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
+    gpgcheck: false
+    enabled: true
+
+- name: Add Terraform repository
+  yum_repository:
+    name: hashicorp
+    description: hashicorp repository to install Terraform
+    baseurl: https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable
+    gpgcheck: false
+    enabled: true
+
+- name: Add Google-cloud sdk repository
+  yum_repository:
+    name: Google-cloud_sdk
+    description: Google repository to install the Google-cloud sdk
+    baseurl: https://packages.cloud.google.com/yum/repos/cloud-sdk-el7-x86_64
+    enabled: true
+    gpgcheck: false

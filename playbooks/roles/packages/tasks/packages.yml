@@ -1,0 +1,16 @@
+---
+
+- name: Install ansible
+  yum:
+    name: ansible-2.9.17
+    state: present
+
+- name: Install Terraform
+  yum:
+    name: terraform
+    state: latest
+
+- name: Install google-cloud-sdk
+  yum:
+    name: google-cloud-sdk
+    state: latest

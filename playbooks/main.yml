@@ -2,5 +2,12 @@
 
 - name: Test connection
   hosts: localhost
+  become: true
   roles:
     - test_conn
+
+- name: Add repositories and install packages
+  hosts: localhost
+  become: true
+  roles:
+    - packages
