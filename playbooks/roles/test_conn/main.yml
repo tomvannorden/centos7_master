@@ -1,0 +1,10 @@
+---
+
+- name: Test connection
+  command: echo "Hi there you handsome man. If you can read this your connection is working as expected :)"
+  register: test_result
+  failed_when: test_result.rc != 0
+  changed_when: false
+
+- debug:
+    var: test_result.stdout

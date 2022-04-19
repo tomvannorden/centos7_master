@@ -1,0 +1,6 @@
+---
+
+- name: Test connection
+  hosts: localhost
+  roles:
+    - test_conn
