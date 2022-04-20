@@ -1,5 +1,15 @@
 ---
 
+- name: Install wget
+  yum:
+    name: wget
+    state: latest
+
+- name: Install git
+  yum:
+    name: git
+    state: latest
+
 - name: Install ansible
   yum:
     name: ansible-2.9.17
