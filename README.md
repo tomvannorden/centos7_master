@@ -9,7 +9,8 @@ Configuration of my Centos7 master VM
    a. Configure a static network in the OS (/etc/sysconfig/network-scripts/ifcfg-<int> (see below example))
    b. Create a NAT network in virtualbox (same as in previous step), enable port forwarding, and attach it to your VM's interface
       * You should now be able to connect to your host via the forward rule
-   c. Configure a proxy to access the internet (if required)
+   c. Add the default host-only network to a second adapter on the vm and enable it.
+   d. Configure a proxy to access the internet (if required)
       * Curl a website to check if internet access is working
       * More information about the proxy I used you can find below.
 5. Install Ansible
@@ -60,7 +61,7 @@ DEVICE=enp0s3
 ONBOOT=yes
 IPADDR=10.0.2.15
 NETMASK=255.255.255.0
-GATEWAY=10.0.2.1
+GATEWAY=10.0.2.2
 DNS1=x.x.x.x
 DNS2=x.x.x.x
 
@@ -70,29 +71,31 @@ DNS2=x.x.x.x
    * https://github.com/bdwyertech/gontlm-proxy
 3. Command: "go install"
 4. Update /etc/yum.conf file with the proxy settings
-   * proxy=http://10.0.2.2:3128/
+   * proxy=http://192.168.56.1:3128/
 5. Update ~/.bashrc file
    * See below:
-export http_proxy="http://10.0.2.2:3128/"
+export http_proxy="http://192.168.56.1:3128/"
 export https_proxy=${http_proxy}
-export no_proxy="localhost,10.0.2.2,127.0.0.0/8,::1"
+export no_proxy="localhost,192.168.56.1,127.0.0.0/8,::1"
 export HTTPS_PROXY=${http_proxy}
 export HTTP_PROXY=${http_proxy}
 export NO_PROXY=${no_proxy}
-export _JAVA_OPTIONS='-Dhttp.proxyHost=10.0.2.2 -Dhttp.proxyPort=3128 -Dhttps.proxyHost=10.0.2.2 -Dhttps.proxyPort=3128 -DsocksProxyHost=10.0.2.2 -DsocksProxyPort=8010 -Dhttp.nonProxyHosts="localhost"'
+export _JAVA_OPTIONS='-Dhttp.proxyHost=192.168.56.1 -Dhttp.proxyPort=3128 -Dhttps.proxyHost=192.168.56.1 -Dhttps.proxyPort=3128 -DsocksProxyHost=192.168.56.1 -DsocksProxyPort=8010 -Dhttp.nonProxyHosts="localhost"'
    
-NOTE: I am using a NAT network on Virtualbox. 10.0.2.2 is the Gateway of my specific NAT network. Port 3128 is the default port used by gontlm
+NOTE: I am using a NAT network on Virtualbox for traffic inside the business network. 192.168.56.1 of the host only network which is only used for internet traffic via the proxy. Port 3128 is the default port used by gontlm. Make sure you bind the internet proxy to your internal host only network, so that no one can use your proxy to surf the web with your account details. 
+	
    
 6. You can create a powershell script to run gontlm in the background and run it when you need the proxy:
 
-   function GoNTLM-Enable {
+# Do not forget to update the path to gontlm-proxy.exe in the scriptblock. The path is specif to your environment.
+
+function GoNTLM-Enable {
 	Remove-Job -Name GoNTLM-Proxy -Force -ErrorAction SilentlyContinue
-	Start-Job -Name GoNTLM-Proxy -ScriptBlock {C:\Users\tvannor\go\bin\gontlm-proxy.exe }
-	$env:http_proxy='http://127.0.0.1:3128'
+	Start-Job -Name GoNTLM-Proxy -ScriptBlock { C:\Users\tvannor\go\bin\gontlm-proxy.exe -bind http://192.168.56.1:3128 -verbose }
 }
 
 GoNTLM-Enable
-   
+	
 # Example Yum repo config
 [tnorden@centos7master ~]$ cat /etc/yum.repos.d/ansible.repo
 [ansible]
