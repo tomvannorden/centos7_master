@@ -24,3 +24,8 @@
   yum:
     name: google-cloud-sdk
     state: latest
+
+- name: Install socat
+  yum:
+    name: socat
+    state: latest
