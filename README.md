@@ -20,6 +20,7 @@ Configuration of my Centos7 master VM
 6. Install git (any version will do)
    a. 'yum install git' (easiest)
    b. Check the version of git: git --version
+   c. configure git for proxy communication ~/.ssh/config (add the below config)
 7. Clone this repository to you linux machine
 8. Create an SSH key and copy it to bitbucket
 9. Connect your development environment to the 
@@ -104,4 +105,8 @@ baseurl=https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
 enabled=1
 gpgcheck=0
 
-   
+# Git proxy config
+Host github.com
+User git
+ProxyCommand socat - PROXY:192.168.56.1:%h:%p,proxyport=3128
+
